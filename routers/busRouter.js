@@ -4,5 +4,6 @@ const router = express.Router();
 
 router.post("/add", busController.addNewBus);
 router.get("/available/:seats", busController.getAllBuses);
+router.get("/:id/bookings", busController.bookedBus);
 
 module.exports = router;

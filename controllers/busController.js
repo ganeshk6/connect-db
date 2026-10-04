@@ -1,5 +1,7 @@
 const { Op } = require('sequelize');
 const busModel = require('../models/buses');
+const userModel = require('../models/users');
+const bookingModel = require('../models/booking');
 const {sendSuccessResponse, sendErrorResponse} = require('../utils/response');
 
 const addNewBus = async (req, res) => {
@@ -71,8 +73,41 @@ const getAllBuses = async (req, res) => {
     }
 };
 
+const bookedBus = async(req, res) => {
+    try{
+        const { id } = req.params;
+        const bookedBus = await bookingModel.findAll({
+            where:{
+                busId:id
+            },
+            include:userModel
+        })
+        if(bookedBus == 0){
+            return sendErrorResponse(
+                res,
+                err.message,
+                "Booking not found for this bus!",
+                404
+            );
+        }
+        return sendSuccessResponse(
+            res,
+            bookedBus,
+            "Fetched booked buses successfully",
+            200
+        );
+    }catch(err){
+        return sendErrorResponse(
+            res,
+            err.message,
+            "Failed to fetch bus booking",
+            500
+        );
+    }
+}
 
 module.exports = {
     addNewBus,
-    getAllBuses
+    getAllBuses,
+    bookedBus
 };

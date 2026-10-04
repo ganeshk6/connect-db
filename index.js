@@ -2,10 +2,7 @@ const express = require('express');
 const sequelize = require('./utils/db_connection');
 const userRoutes = require('./routers/userRouter');
 const busRoutes = require('./routers/busRouter');
-const userModel = require('./models/users');
-const busModel = require('./models/buses');
-const paymentModel = require('./models/payment');
-const bookingModel = require('./models/booking');
+require('./models')
 const app = express();
 const PORT = 4000;
 
