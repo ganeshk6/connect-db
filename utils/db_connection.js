@@ -1,15 +1,21 @@
-const mysql = require("mysql2/promise");
+const { Sequelize } = require('sequelize');
 
-const connection = mysql.createPool({
-    host: "localhost",
-    user: "root",
-    password: "root",
-    database: "node_project",
-
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0
+const sequelize = new Sequelize('node_project', 'root', 'root', {
+  host: 'localhost',
+  dialect: 'mysql'
 });
+
+(async () => {
+    try{
+        await sequelize.authenticate();
+        console.log("Database connection has been established successfully.");
+    }catch(err){
+        console.error("Database connection failed:", err);
+    }
+})();
+
+module.exports = sequelize;
+/*
 
 const queries = [
     `
@@ -68,3 +74,4 @@ async function setupDatabase() {
 setupDatabase();
 
 module.exports = connection;
+*/

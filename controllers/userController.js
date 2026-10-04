@@ -1,28 +1,21 @@
-const db = require('../utils/db_connection');
+const userModel = require('../models/users');
 const {sendSuccessResponse, sendErrorResponse} = require('../utils/response');
 
 const addNewUser = async (req, res) => {
 
     try {
 
-        const { name, email } = req.body;
+        const { name, email, age } = req.body;
 
-        const query = `
-            INSERT INTO users (name, email)
-            VALUES (?, ?)
-        `;
-
-        const [results] = await db.execute(
-            query,
-            [name, email]
-        );
+        const user = await userModel.create({
+            name:name,
+            email:email,
+            age:age
+        })
 
         return sendSuccessResponse(
             res,
-            {
-                userId: results.insertId,
-                affectedRows: results.affectedRows
-            },
+            user,
             "New user added successfully",
             201
         );
@@ -44,14 +37,11 @@ const addNewUser = async (req, res) => {
 const getAllUsers = async (req, res) => {
 
     try {
-
-        const query = "SELECT * FROM users";
-
-        const [results] = await db.execute(query);
+        const users = await userModel.findAll()
 
         return sendSuccessResponse(
             res,
-            results,
+            users,
             "Users fetched successfully",
             200
         );

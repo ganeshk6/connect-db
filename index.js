@@ -1,7 +1,11 @@
 const express = require('express');
-const db = require('./utils/db_connection');
+const sequelize = require('./utils/db_connection');
 const userRoutes = require('./routers/userRouter');
 const busRoutes = require('./routers/busRouter');
+const userModel = require('./models/users');
+const busModel = require('./models/buses');
+const paymentModel = require('./models/payment');
+const bookingModel = require('./models/booking');
 const app = express();
 const PORT = 4000;
 
@@ -9,9 +13,16 @@ app.use(express.json());
 app.get('/', (req, res) => {
     res.send('Hello World');  
 })
-app.use('/api/users', userRoutes);
-app.use('/api/buses', busRoutes);
+app.use('/users', userRoutes);
+app.use('/buses', busRoutes);
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+sequelize.sync({force: false})
+.then(()=>{
+    console.log("Database synchronized");
+    app.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}`);
+    });
+})
+.catch((err)=>{
+    console.log(err)
+})
